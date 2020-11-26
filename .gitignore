@@ -1,0 +1,9 @@
+
+hideandseek/.DS_Store
+__pycache__/
+hideandseek/
+.vscode/
+*.pyc
+source/.DS_Store
+source/raw_data/board_2/.DS_Store
+source/raw_data/.DS_Store

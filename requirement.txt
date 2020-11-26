@@ -1,0 +1,16 @@
+apng==0.3.4
+astroid==2.4.2
+autopep8==1.5.4
+easygraphics==2.0.1.2
+isort==5.6.4
+lazy-object-proxy==1.4.3
+mccabe==0.6.1
+pycodestyle==2.6.0
+pygame==2.0.0
+pylint==2.6.0
+PyQt5==5.15.1
+PyQt5-sip==12.8.1
+rope==0.18.0
+six==1.15.0
+toml==0.10.2
+wrapt==1.12.1
