@@ -79,17 +79,17 @@ class DrawFromResult:
             for j in range(self.__col):
                 if (map[i][j] == 2):
                     draw_image(
-                        10 + 50 * j + ((50 - img.get_width()) / 2),
-                        10 + 50 * i + ((50 - img.get_width()) / 2),
-                        img, img.get_width(), img.get_width())
+                        10 + (50 * j + (int(50 - img.get_width()) / 2)),
+                        10 + (50 * i + (int(50 - img.get_width()) / 2)),
+                        img, img.get_width(), img.get_height())
                 elif map[i][j] == 42:
                     set_color(Color.DARK_BLUE)
                     rect(10 + 50 * j, 10 + 50 * i, 10 +
                          50 * (j + 1), 10 + 50 * (i+1))
                     draw_image(
-                        10 + 50 * j + ((50 - img1.get_width()) / 2),
-                        10 + 50 * i + ((50 - img1.get_width()) / 2),
-                        img1, img1.get_width(), img1.get_width())
+                        10 + 50 * j + (int(50 - img1.get_width()) / 2),
+                        10 + 50 * i + (int(50 - img1.get_width()) / 2),
+                        img1, img1.get_width(), img1.get_height())
         img.close()
         img1.close()
 
@@ -120,7 +120,7 @@ class DrawFromResult:
         set_fill_color(Color.LIGHT_CYAN)
         for i in range(self.__row):
             for j in range(self.__col):
-                if (map[i][j] == 41):
+                if (map[i][j] == 6):
                     draw_rect(10 + 50 * j,
                               10 + 50 * i,
                               10 + 50 * (j + 1),

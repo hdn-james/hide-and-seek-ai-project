@@ -21,8 +21,8 @@ def main():
     data.sight_process()
     end = timer()
 
-    # sa = seeker_action.SeekerAction(choose,1,board_1.get_row(), board_1.get_column())
-    # sa.get_something()
+    sa = seeker_action.SeekerAction(choose,1,board_1.get_row(), board_1.get_column(),board_1.get_hider_count())
+    sa.start()
 
     t = draw_from_result.DrawFromResult(choose,board_1.get_windows_size('width'),board_1.get_windows_size('height'),board_1.get_column(),board_1.get_row(),board_1.get_obstacles())
     t.draw_board()
