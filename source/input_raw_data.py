@@ -1,4 +1,5 @@
 import os
+import player
 
 
 class Input:
@@ -70,89 +71,34 @@ class Input:
                 for j in range(item[0], item[2] + 1):
                     self.__map[i][j] = obstacle_index
             obstacle_index -= 1
-        
-        sx, sy, dx, dy = 0, 0, 0, 0
+
+        sx, sy = 0, 0
         for i in range(self.__row):
             for j in range(self.__col):
                 if self.__map[i][j] == 3:
                     sx, sy = i, j
 
-        # calling isPath method
         for i in range(self.__row):
             for j in range(self.__col):
                 if self.__map[i][j] == 0:
-                    dx, dy = i, j
-                    if not self.isPath(sx, sy, dx, dy):
-                        self.__map[i][j] = 1
-
-    def isSafe(self, i, j):
-        if (i >= 0 and i < self.__row) and j >= 0 and j < self.__col:
-            return True
-        return False
-
-    def isPath(self, sx, sy, dx, dy):
-        # Defining visited array to keep
-        # track of already visited indexes
-        visited = [
-            [False for x in range(self.__row)]
-            for y in range(self.__col)]
-        # Flag to indicate whether the
-        # path exists or not
-        flag = False
-        for i in range(self.__row):
-            for j in range(self.__col):
-                # If matrix[i][j] is source
-                # and it is not visited
-                if (self.__map[i][j] == 3 and visited[i][j] == False):
-                    # Starting from i, j and
-                    # then finding the path
-                    if (self.checkPath(i, j, visited, dx, dy)):
-                        # If path exists
-                        flag = True
-                        break
-        if (flag):
-            return True
-        return False
-
-    def checkPath(self, i, j, visited, dx, dy):
-        # Checking the boundries, walls and
-        # whether the cell is unvisited
-        if (self.isSafe(i, j) and self.__map[i][j] != 1 and not visited[i][j]):
-            # Make the cell visited
-            visited[i][j] = True
-            # If the cell is the required
-            # destination then return true
-            if (i == dx and j == dy):
-                return True
-            # traverse up
-            up = self.checkPath(i - 1, j, visited, dx, dy)
-            # If path is found in up
-            # direction return true
-            if (up):
-                return True
-            # Traverse left
-            left = self.checkPath(i, j - 1, visited, dx, dy)
-            # If path is found in left
-            # direction return true
-            if (left):
-                return True
-            # Traverse down
-            down = self.checkPath(i + 1, j, visited, dx, dy)
-            # If path is found in down
-            # direction return true
-            if (down):
-                return True
-            # Traverse right
-            right = self.checkPath(i, j + 1, visited, dx, dy)
-            # If path is found in right
-            # direction return true
-            if (right):
-                return True
-        # No path has been found
-        return False
+                    target = (i, j)
+                    path = player.bfs(
+                        self.__map, self.__row,
+                        self.__col, sx, sy, target)
+                    if target not in path:
+                        self.__map[target[0]][target[1]] = 1
 
     def output_to_result(self):
         try:
+            folder = 'raw_data/board_'+str(self.__board)+'/result'
+            if os.path.isdir(folder):
+                for the_file in os.listdir(folder):
+                    file_path = os.path.join(folder, the_file)
+                    try:
+                        if os.path.isfile(file_path):
+                            os.unlink(file_path)
+                    except Exception as e:
+                        print(e)
             os.mkdir('raw_data/board_'+str(self.__board)+'/result')
         except:
             print("Directory exist!")
