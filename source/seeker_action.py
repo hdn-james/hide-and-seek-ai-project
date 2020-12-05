@@ -145,9 +145,9 @@ class SeekerAction():
                 for hider in hider_list:
                     hider_announce = hider_action.HiderAction(self.__board, hider[0], hider[1])
                     hider_announce.announce()
-                i -= 1
+                    self.__start_state += 1
+                break
             else:
-                
                 if move[i] == 1:
                     self.__move_right(x, y)
                     y += 1
@@ -201,6 +201,7 @@ class SeekerAction():
                                 found = True
                     if found:
                         break
+            self.__read_from_current_state(state_cur)
         return state_cur, x, y
 
     def __get_to_target(self, x, y, target, mode):
@@ -252,10 +253,17 @@ class SeekerAction():
         row, col = 0, 0
         for i in range(player.row):
             for j in range(player.column):
-                if self.__map[i][j] == 5 or self.__map[i][j] == 45:
+                if self.__map[i][j] == 42:
                     targets.append((i, j))
                 elif (self.__map[i][j] == 3):
                     row, col = i, j
+        if len(targets) == 0:
+            for i in range(player.row):
+                for j in range(player.column):
+                    if self.__map[i][j] == 5 or self.__map[i][j] == 45:
+                        targets.append((i, j))
+                    elif (self.__map[i][j] == 3):
+                        row, col = i, j
         if len(targets) == 0:
             for i in range(player.row):
                 for j in range(player.column):
@@ -273,7 +281,7 @@ class SeekerAction():
         self.__lock_target(row, col, targets)
 
     def start(self):
-        while player.hider > 0:
+        while player.hider > 0 and (player.state-1 - self.__start_state) < player.step_limit:
             hider_found = 0
             for i in self.__map:
                 for j in i:

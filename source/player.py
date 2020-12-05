@@ -12,6 +12,7 @@ state = 1
 hider = 0
 row = 0
 column = 0
+step_limit = 500
 
 
 def is_safe(maps, x, y):

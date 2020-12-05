@@ -109,7 +109,6 @@ class HiderAction:
                 move.append(7)
             elif path[i+1][0] - path[i][0] == 1 and path[i+1][1] - path[i][1] == 1:
                 move.append(8)
-        print(move)
         return move
 
     def __move(self, target, state_cur):
@@ -196,4 +195,3 @@ class HiderAction:
     def go_hiding(self):
         target = self.__find_furthest()
         self.__get_to_target(target)
-        print(self.__hx, self.__hy)
