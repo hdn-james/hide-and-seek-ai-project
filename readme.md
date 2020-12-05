@@ -13,5 +13,17 @@
 ## Run HIDE AND SEEK demonstration
 - Install all dependencies
     ```
-    pip3 install requirement.txt
+    pip3 install -r requirement.txt
+    ```
+- Move to 'source/' folder before running the demo
+    ```
+    cd source
+    ```
+- Run demonstration
+    ```
+    python3 run.py -board_id <id>
+    ```
+- Clean all result files
+    ```
+    python3 cleaner.py
     ```
