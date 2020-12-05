@@ -1,10 +1,8 @@
-
+import player
 
 class SightProcessing:
-    def __init__(self, board=1, row=0, column=0, state=1):
+    def __init__(self, board=1, state=1):
         self.__board = board
-        self.__row = row
-        self.__col = column
         self.__map = []
         self.__state = state
         self.__seeker_sight = [
@@ -24,7 +22,7 @@ class SightProcessing:
             file.close()
 
     def __is_out_of_the_board(self, x, y):
-        return (x < 0) or (y < 0) or (x >= self.__row) or (y >= self.__col)
+        return (x < 0) or (y < 0) or (x >= player.row) or (y >= player.column)
 
     def __sight_check(self, x, y):
         for i in self.__seeker_sight:
@@ -465,13 +463,13 @@ class SightProcessing:
                             self.__map[x+2][y+3] = 4
 
     def sight_process(self):
-        for i in range(self.__row):
-            for j in range(self.__col):
+        for i in range(player.row):
+            for j in range(player.column):
                 if (self.__map[i][j] == 3):
                     self.__sight_check(i, j)
         file = open(self.__path_to_result_1, 'w')
-        for i in range(self.__row):
-            for j in range(self.__col):
+        for i in range(player.row):
+            for j in range(player.column):
                 file.write('{} '.format(self.__map[i][j]))
             file.write('\n')
         file.close()

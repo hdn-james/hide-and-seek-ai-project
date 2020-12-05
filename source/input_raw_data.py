@@ -22,11 +22,8 @@ class Input:
             f.close()
         self.__windows_size = (10 * 2 + 50 * self.__row,
                                10 * 2 + 50 * self.__col)
-        self.__hider = 0
-        for i in self.__map:
-            for j in i:
-                if j == 2:
-                    self.__hider += 1
+        player.row, player.column = self.__row, self.__col
+        
 
     # GET
 
@@ -53,9 +50,6 @@ class Input:
     def get_obstacles(self):
         return self.__obstacle
 
-    def get_hider_count(self):
-        return self.__hider
-
     def map_calibration(self):
         obstacle_index = -1
         obstacle_item = []
@@ -80,13 +74,24 @@ class Input:
 
         for i in range(self.__row):
             for j in range(self.__col):
-                if self.__map[i][j] == 0:
+                if self.__map[i][j] == 0 or self.__map[i][j] == 2:
                     target = (i, j)
-                    path = player.bfs(
-                        self.__map, self.__row,
-                        self.__col, sx, sy, target)
+                    path = player.bfs(self.__map, sx, sy, target,'seeker')
                     if target not in path:
                         self.__map[target[0]][target[1]] = 1
+        
+        for i in self.__map:
+            for j in i:
+                if j == 2 or j == 42:
+                    player.hider += 1
+
+    def get_hider_list(self):
+        hider_list = []
+        for i in range(self.__row):
+            for j in range(self.__col):
+                if (self.__map[i][j] == 2 or self.__map[i][j] == 42):
+                    hider_list.append((i,j))
+        return hider_list
 
     def output_to_result(self):
         try:

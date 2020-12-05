@@ -1,15 +1,14 @@
 import sight_processing
 import collections
 import player
+import hider_action
 
 
 class SeekerAction():
-    def __init__(self, board=1, row=0, column=0, hider=1):
+    def __init__(self, board=1):
         self.__board = board
-        self.__row = row
-        self.__col = column
         self.__map = []
-        self.__hider = hider
+        self.__start_state = player.state
         self.__path_to_result = 'raw_data/board_' + \
             str(self.__board) + '/result/result_' + str(player.state) + '.txt'
         with open(self.__path_to_result, 'r') as f:
@@ -19,57 +18,57 @@ class SeekerAction():
 
     def __move_up(self, x, y):
         if self.__map[x-1][y] == 42 or self.__map[x-1][y] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x-1][y] = 3
         self.__map[x][y] = 4
 
     def __move_down(self, x, y):
         if self.__map[x+1][y] == 42 or self.__map[x+1][y] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x+1][y] = 3
         self.__map[x][y] = 4
 
     def __move_left(self, x, y):
         if self.__map[x][y-1] == 42 or self.__map[x][y-1] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x][y-1] = 3
         self.__map[x][y] = 4
 
     def __move_right(self, x, y):
         if self.__map[x][y+1] == 42 or self.__map[x][y+1] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x][y+1] = 3
         self.__map[x][y] = 4
 
     def __move_up_right(self, x, y):
         if self.__map[x-1][y+1] == 42 or self.__map[x-1][y+1] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x-1][y+1] = 3
         self.__map[x][y] = 4
 
     def __move_up_left(self, x, y):
         if self.__map[x-1][y-1] == 42 or self.__map[x-1][y-1] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x-1][y-1] = 3
         self.__map[x][y] = 4
 
     def __move_down_left(self, x, y):
         if self.__map[x+1][y-1] == 42 or self.__map[x+1][y-1] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x+1][y-1] = 3
         self.__map[x][y] = 4
 
     def __move_down_right(self, x, y):
         if self.__map[x+1][y+1] == 42 or self.__map[x+1][y+1] == 2:
-            self.__hider -= 1
+            player.hider -= 1
         self.__map[x+1][y+1] = 3
         self.__map[x][y] = 4
 
     def __write_to_result(self, state):
         file = open('raw_data/board_' + str(self.__board) +
                     '/result/result_' + str(state) + '.txt', 'w')
-        for i in range(self.__row):
-            for j in range(self.__col):
+        for i in range(player.row):
+            for j in range(player.column):
                 file.write('{} '.format(self.__map[i][j]))
             file.write('\n')
         file.close()
@@ -91,18 +90,26 @@ class SeekerAction():
         return index_min
 
     def __reset_sight(self):
-        for i in range(self.__row):
-            for j in range(self.__col):
+        for i in range(player.row):
+            for j in range(player.column):
                 if self.__map[i][j] == 4:
                     self.__map[i][j] = 6
                 elif self.__map[i][j] == 42:
                     self.__map[i][j] = 2
                 elif self.__map[i][j] == 45:
                     self.__map[i][j] = 5
+    
+    def get_hider_list(self):
+        hider_list = []
+        for i in range(player.row):
+            for j in range(player.column):
+                if (self.__map[i][j] == 2 or self.__map[i][j] == 42):
+                    hider_list.append((i,j))
+        return hider_list
 
     def __move_decider(self, x, y, target):
         move = []
-        path = player.bfs(self.__map, self.__row, self.__col, x, y, target)
+        path = player.bfs(self.__map, x, y, target, 'seeker')
         for i in range(len(path)-1):
             if path[i+1][0] - path[i][0] == 0 and path[i+1][1] - path[i][1] == 1:
                 move.append(1)
@@ -124,67 +131,76 @@ class SeekerAction():
 
     def __sight_process(self, state_cur):
         sight = sight_processing.SightProcessing(
-            self.__board, self.__row, self.__col, state_cur)
+            self.__board, state_cur)
         sight.sight_process()
 
     def __move(self, x, y, target, state_cur, mode):
         move = self.__move_decider(x, y, target)
-        for m in move:
+        for i in range(len(move)):
             self.__reset_sight()
             state_cur += 1
-            if m == 1:
-                self.__move_right(x, y)
-                y += 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            elif m == 2:
-                self.__move_up_right(x, y)
-                x -= 1
-                y += 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            elif m == 3:
-                self.__move_up(x, y)
-                x -= 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            elif m == 4:
-                self.__move_up_left(x, y)
-                x -= 1
-                y -= 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            elif m == 5:
-                self.__move_left(x, y)
-                y -= 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            elif m == 6:
-                self.__move_down_left(x, y)
-                x += 1
-                y -= 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            elif m == 7:
-                self.__move_down(x, y)
-                x += 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            elif m == 8:
-                self.__move_down_right(x, y)
-                x += 1
-                y += 1
-                self.__write_to_result(state_cur)
-                self.__sight_process(state_cur)
-            self.__read_from_current_state(state_cur)
-            if mode == 2:
-                found = False
-                for i in range(self.__row):
-                    for j in range(self.__col):
-                        if self.__map[i][j] == 42 or self.__map[target[0]][target[1]] == 4:
-                            found = True
-                if found:
-                    break
+            if player.state > self.__start_state and player.state % 5 == 0:
+                print("hider turn")
+                hider_list = self.get_hider_list()
+                for hider in hider_list:
+                    hider_announce = hider_action.HiderAction(self.__board, hider[0], hider[1])
+                    hider_announce.announce()
+                i -= 1
+            else:
+                
+                if move[i] == 1:
+                    self.__move_right(x, y)
+                    y += 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                elif move[i] == 2:
+                    self.__move_up_right(x, y)
+                    x -= 1
+                    y += 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                elif move[i] == 3:
+                    self.__move_up(x, y)
+                    x -= 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                elif move[i] == 4:
+                    self.__move_up_left(x, y)
+                    x -= 1
+                    y -= 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                elif move[i] == 5:
+                    self.__move_left(x, y)
+                    y -= 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                elif move[i] == 6:
+                    self.__move_down_left(x, y)
+                    x += 1
+                    y -= 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                elif move[i] == 7:
+                    self.__move_down(x, y)
+                    x += 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                elif move[i] == 8:
+                    self.__move_down_right(x, y)
+                    x += 1
+                    y += 1
+                    self.__write_to_result(state_cur)
+                    self.__sight_process(state_cur)
+                self.__read_from_current_state(state_cur)
+                if mode == 2:
+                    found = False
+                    for i in range(player.row):
+                        for j in range(player.column):
+                            if self.__map[i][j] == 42 or self.__map[target[0]][target[1]] == 4:
+                                found = True
+                    if found:
+                        break
         return state_cur, x, y
 
     def __get_to_target(self, x, y, target, mode):
@@ -220,8 +236,8 @@ class SeekerAction():
             n = 0
             targets.clear()
             row, col = 0, 0
-            for i in range(self.__row):
-                for j in range(self.__col):
+            for i in range(player.row):
+                for j in range(player.column):
                     if (self.__map[i][j] == 3):
                         row, col = i, j
                     elif (self.__map[i][j] == 42):
@@ -234,23 +250,30 @@ class SeekerAction():
     def __go_finding(self):
         targets = []
         row, col = 0, 0
-        for i in range(self.__row):
-            for j in range(self.__col):
-                if self.__map[i][j] == 0:
+        for i in range(player.row):
+            for j in range(player.column):
+                if self.__map[i][j] == 5 or self.__map[i][j] == 45:
                     targets.append((i, j))
                 elif (self.__map[i][j] == 3):
                     row, col = i, j
         if len(targets) == 0:
-            for i in range(self.__row):
-                for j in range(self.__col):
-                    if self.__map[i][j] == 2:
+            for i in range(player.row):
+                for j in range(player.column):
+                    if self.__map[i][j] == 0:
+                        targets.append((i, j))
+                    elif (self.__map[i][j] == 3):
+                        row, col = i, j
+        if len(targets) == 0:
+            for i in range(player.row):
+                for j in range(player.column):
+                    if self.__map[i][j] == 2 or self.__map[i][j] == 42:
                         targets.append((i, j))
                     elif (self.__map[i][j] == 3):
                         row, col = i, j
         self.__lock_target(row, col, targets)
 
     def start(self):
-        while self.__hider > 0:
+        while player.hider > 0:
             hider_found = 0
             for i in self.__map:
                 for j in i:

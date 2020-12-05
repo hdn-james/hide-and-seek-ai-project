@@ -125,6 +125,16 @@ class DrawFromResult:
                               10 + 50 * i,
                               10 + 50 * (j + 1),
                               10 + 50 * (i + 1))
+    
+    def __draw_announce(self, map):
+        set_fill_color(Color.DARK_RED)
+        for i in range(self.__row):
+            for j in range(self.__col):
+                if (map[i][j] == 45 or map[i][j] == 5):
+                    draw_rect(10 + 50 * j,
+                              10 + 50 * i,
+                              10 + 50 * (j + 1),
+                              10 + 50 * (i + 1))
 
     def draw_board(self):
         for map in self.__maps:
@@ -136,6 +146,7 @@ class DrawFromResult:
             self.__draw_obstacles(map)
             self.__draw_seeker(map)
             self.__draw_seeker_sight(map)
+            self.__draw_announce(map)
             self.__draw_hider(map)
             self.__draw_seen(map)
             pause()
