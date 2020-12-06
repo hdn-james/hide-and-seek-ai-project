@@ -1,0 +1,3 @@
+Hider found: 10
+Steps: 12
+Score: 188

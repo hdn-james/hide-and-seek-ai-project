@@ -24,9 +24,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-board_id', '--board_id', type=int,
                         help='Choose a board to run')
+    parser.add_argument('-level', '--level', type=int,
+                        help='Select a level')
     try:
         args = parser.parse_args()
         board = args.board_id
+        player.level = args.level
 
         path = 'raw_data/'
         listdirs = os.listdir(path)
@@ -41,11 +44,12 @@ def main():
             data = sight_processing.SightProcessing(choose)
             data.sight_process()
 
-            hider_list = board_1.get_hider_list()
-            for hider in hider_list:
-                hider_begin = hider_action.HiderAction(
-                    choose, hider[0], hider[1])
-                hider_begin.go_hiding()
+            if player.level == 3:
+                hider_list = board_1.get_hider_list()
+                for hider in hider_list:
+                    hider_begin = hider_action.HiderAction(
+                        choose, hider[0], hider[1])
+                    hider_begin.go_hiding()
 
             sa = seeker_action.SeekerAction(choose)
             sa.start()

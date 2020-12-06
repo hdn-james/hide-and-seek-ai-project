@@ -21,9 +21,9 @@
     ```
 - Run demonstration
     ```
-    python3 run.py -board_id <id>
+    python3 run.py -board_id <id> -level <level>
     ```
-- Clean all result files
+- Clean up the project
     ```
-    python3 cleaner.py
+    python3 clean_up.py
     ```

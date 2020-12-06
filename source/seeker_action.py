@@ -6,9 +6,10 @@ import hider_action
 
 
 class SeekerAction():
-    def __init__(self, board=1):
+    def __init__(self, board=1, level = 3):
         self.__board = board
         self.__map = []
+        self.__level = level
         self.__start_state = player.state
         self.__hider = player.hider
         self.__path_to_result = 'raw_data/board_' + \
