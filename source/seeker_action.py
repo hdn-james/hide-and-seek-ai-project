@@ -140,12 +140,12 @@ class SeekerAction():
             self.__reset_sight()
             state_cur += 1
             if player.state > self.__start_state and player.state % 5 == 0:
-                print("hider turn")
                 hider_list = self.get_hider_list()
                 for hider in hider_list:
                     hider_announce = hider_action.HiderAction(self.__board, hider[0], hider[1])
                     hider_announce.announce()
                     self.__start_state += 1
+                self.__read_from_current_state(state_cur)
                 break
             else:
                 if move[i] == 1:
@@ -201,7 +201,6 @@ class SeekerAction():
                                 found = True
                     if found:
                         break
-            self.__read_from_current_state(state_cur)
         return state_cur, x, y
 
     def __get_to_target(self, x, y, target, mode):
