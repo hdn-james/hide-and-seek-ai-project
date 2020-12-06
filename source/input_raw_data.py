@@ -20,8 +20,8 @@ class Input:
             for line in f:
                 self.__obstacle = [int(x) for x in line.split()]
             f.close()
-        self.__windows_size = (10 * 2 + 50 * self.__row,
-                               10 * 2 + 50 * self.__col)
+        self.__windows_size = (10 * 2 + 30 * self.__row,
+                               10 * 2 + 30 * self.__col)
         player.row, player.column = self.__row, self.__col
         
 
