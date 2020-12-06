@@ -1,5 +1,6 @@
 import sight_processing
 import collections
+import os
 import player
 import hider_action
 
@@ -9,6 +10,7 @@ class SeekerAction():
         self.__board = board
         self.__map = []
         self.__start_state = player.state
+        self.__hider = player.hider
         self.__path_to_result = 'raw_data/board_' + \
             str(self.__board) + '/result/result_' + str(player.state) + '.txt'
         with open(self.__path_to_result, 'r') as f:
@@ -98,13 +100,13 @@ class SeekerAction():
                     self.__map[i][j] = 2
                 elif self.__map[i][j] == 45:
                     self.__map[i][j] = 5
-    
+
     def get_hider_list(self):
         hider_list = []
         for i in range(player.row):
             for j in range(player.column):
                 if (self.__map[i][j] == 2 or self.__map[i][j] == 42):
-                    hider_list.append((i,j))
+                    hider_list.append((i, j))
         return hider_list
 
     def __move_decider(self, x, y, target):
@@ -142,7 +144,8 @@ class SeekerAction():
             if player.state > self.__start_state and player.state % 5 == 0:
                 hider_list = self.get_hider_list()
                 for hider in hider_list:
-                    hider_announce = hider_action.HiderAction(self.__board, hider[0], hider[1])
+                    hider_announce = hider_action.HiderAction(
+                        self.__board, hider[0], hider[1])
                     hider_announce.announce()
                     self.__start_state += 1
                 self.__read_from_current_state(state_cur)
@@ -279,6 +282,21 @@ class SeekerAction():
                         row, col = i, j
         self.__lock_target(row, col, targets)
 
+    def __output_score(self):
+        with open('raw_data/board_' + str(self.__board) + '/score.txt', 'w') as file:
+            file.writelines("Hider found: {}\n".format(
+                self.__hider - player.hider))
+            file.writelines("Steps: {}\n".format(
+                (player.state - self.__start_state)))
+            file.writelines("Score: {}\n".format(
+                (self.__hider - player.hider)*20 - (player.state - self.__start_state)))
+            file.close()
+
+        print("Hider found: {}".format(self.__hider - player.hider))
+        print("Steps: {}".format((player.state - self.__start_state)))
+        print("Score: {}\n".format((self.__hider - player.hider)
+                                 * 20 - (player.state - self.__start_state)))
+
     def start(self):
         while player.hider > 0 and (player.state-1 - self.__start_state) < player.step_limit:
             hider_found = 0
@@ -290,4 +308,4 @@ class SeekerAction():
                 self.__found_something()
             else:
                 self.__go_finding()
-        print("{} steps".format(player.state - 1))
+        self.__output_score()
